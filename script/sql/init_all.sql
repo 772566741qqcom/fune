@@ -11,7 +11,7 @@
  Target Server Version : 50642
  File Encoding         : 65001
 
- Date: 23/05/2019 18:19:41
+ Date: 31/05/2019 15:29:08
 */
 
 SET NAMES utf8mb4;
@@ -307,6 +307,7 @@ CREATE TABLE `M_MEMBER_COUPON`  (
   `shop_name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '店铺名',
   `member_id` bigint(20) NULL DEFAULT NULL COMMENT '会员ID',
   `coupon_id` bigint(20) NULL DEFAULT NULL COMMENT '优惠券ID',
+  `coupon_name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '优惠券名称',
   `service_start_date` datetime(0) NULL DEFAULT NULL COMMENT '使用固定期限-开始',
   `service_end_date` datetime(0) NULL DEFAULT NULL COMMENT '使用固定期限-结束',
   `status` tinyint(2) NULL DEFAULT NULL COMMENT '状态 1,0',
@@ -442,15 +443,19 @@ CREATE TABLE `O_ALLOT_ITEM`  (
   `allot_sn` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '调拨单号',
   `status` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '状态',
   `from_shop_id` bigint(20) NULL DEFAULT NULL COMMENT '发货方店铺ID',
+  `from_shop_name` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '发货方店铺名',
   `to_shop_id` bigint(20) NULL DEFAULT NULL COMMENT '收货方店铺ID',
+  `target_id` bigint(20) NULL DEFAULT NULL COMMENT '目标ID',
   `product_id` bigint(20) NULL DEFAULT NULL COMMENT '商品ID',
   `product_sku_id` bigint(20) NULL DEFAULT NULL COMMENT '商品SKU的ID',
   `quantity` int(10) NULL DEFAULT NULL COMMENT '商品数量',
   `standard` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品规格',
   `product_name` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品名称',
   `product_pic` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品图片',
+  `product_price` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品价格',
   `supply_price` decimal(20, 2) NULL DEFAULT NULL COMMENT '供货价',
   `total_amount` decimal(20, 2) NULL DEFAULT NULL COMMENT '明细总价',
+  `logistics_code` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流代码',
   `logistics_com` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流公司',
   `logistics_num` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流单号',
   `actual_quantity` int(10) NULL DEFAULT NULL COMMENT '实收数量',
@@ -582,6 +587,7 @@ CREATE TABLE `O_ORDER_ITEM`  (
   `pay_amount` decimal(16, 2) NULL DEFAULT NULL COMMENT '实际支付',
   `coupon_weighting_amount` decimal(16, 2) NULL DEFAULT NULL COMMENT '优惠券加权折减',
   `crowd_id` bigint(20) NULL DEFAULT NULL COMMENT '拼团团ID',
+  `logistics_code` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流代码',
   `logistics_com` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流公司',
   `logistics_num` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流单号',
   `after_type` tinyint(2) NULL DEFAULT NULL COMMENT '售后类型',
@@ -591,6 +597,7 @@ CREATE TABLE `O_ORDER_ITEM`  (
   `after_quantity` int(10) NULL DEFAULT NULL COMMENT '售后数量',
   `after_amount` decimal(16, 2) NULL DEFAULT NULL COMMENT '售后金额',
   `old_status` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '先前状态',
+  `reship_logistics_code` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '退货物流代码',
   `reship_logistics_com` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '退货物流公司',
   `reship_logistics_num` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '退货物流单号',
   `reship_name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '退货收货人',
@@ -701,21 +708,50 @@ CREATE TABLE `O_PURCH_ITEM`  (
   `purch_sn` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '采购单号',
   `status` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '状态',
   `from_shop_id` bigint(20) NULL DEFAULT NULL COMMENT '发货方店铺ID',
+  `from_shop_name` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '发货方店铺名',
   `to_shop_id` bigint(20) NULL DEFAULT NULL COMMENT '收货方店铺ID',
+  `target_id` bigint(20) NULL DEFAULT NULL COMMENT '目标ID',
   `product_id` bigint(20) NULL DEFAULT NULL COMMENT '商品ID',
   `product_sku_id` bigint(20) NULL DEFAULT NULL COMMENT '商品SKU的ID',
   `quantity` int(10) NULL DEFAULT NULL COMMENT '商品数量',
   `standard` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品规格',
   `product_name` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品名称',
   `product_pic` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品图片',
+  `product_price` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '商品价格',
   `supply_price` decimal(20, 2) NULL DEFAULT NULL COMMENT '供货价',
   `total_amount` decimal(20, 2) NULL DEFAULT NULL COMMENT '明细总价',
+  `logistics_code` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流代码',
   `logistics_com` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流公司',
   `logistics_num` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '物流单号',
   `actual_quantity` int(10) NULL DEFAULT NULL COMMENT '实收数量',
   `difference` tinyint(2) NULL DEFAULT NULL COMMENT '差异标识 0,1',
   `payment_type` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '支付方式',
   `payment_sn` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '支付流水',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for O_SETTLEMENT
+-- ----------------------------
+DROP TABLE IF EXISTS `O_SETTLEMENT`;
+CREATE TABLE `O_SETTLEMENT`  (
+  `id` bigint(20) NOT NULL,
+  `create_date` datetime(0) NULL DEFAULT NULL,
+  `create_man` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `modify_date` datetime(0) NULL DEFAULT NULL,
+  `modify_man` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `deleted` tinyint(2) NULL DEFAULT NULL,
+  `shop_id` bigint(20) NULL DEFAULT NULL COMMENT '店铺ID',
+  `shop_keeper_id` bigint(20) NULL DEFAULT NULL COMMENT '店员ID',
+  `shop_keeper_account` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '店员账号',
+  `sn` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '结算单号',
+  `status` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '状态',
+  `goods` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '货品小计',
+  `pay_amount` decimal(16, 2) NULL DEFAULT NULL COMMENT '实际支付',
+  `payment_type` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '支付方式',
+  `payment_sn` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '支付流水',
+  `expire_date` datetime(0) NULL DEFAULT NULL COMMENT '过期时间',
+  `from_shop_id` bigint(20) NULL DEFAULT NULL COMMENT '来源店铺ID',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact;
 
@@ -729,7 +765,8 @@ CREATE TABLE `P_ALLOT_SKU`  (
   `create_man` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `modify_date` datetime(0) NULL DEFAULT NULL,
   `modify_man` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `shop_id` bigint(20) NULL DEFAULT NULL COMMENT '店铺ID',
+  `from_shop_id` bigint(20) NULL DEFAULT NULL COMMENT '店铺ID',
+  `to_shop_id` bigint(20) NULL DEFAULT NULL COMMENT '店铺ID',
   `sku_id` bigint(20) NULL DEFAULT NULL COMMENT 'skuID',
   `stock` int(10) NULL DEFAULT NULL COMMENT '库存',
   PRIMARY KEY (`id`) USING BTREE
@@ -765,6 +802,7 @@ CREATE TABLE `P_COUPON`  (
   `modify_date` datetime(0) NULL DEFAULT NULL,
   `modify_man` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `shop_id` bigint(20) NULL DEFAULT NULL COMMENT '店铺ID',
+  `shop_name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '店铺名称',
   `name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '名称',
   `type` tinyint(2) NULL DEFAULT NULL COMMENT '类型',
   `status` tinyint(2) NULL DEFAULT NULL COMMENT '状态 1,0',
@@ -838,7 +876,7 @@ CREATE TABLE `P_PRODUCT`  (
   `price` decimal(16, 2) NULL DEFAULT NULL COMMENT '销售价',
   `profit` decimal(16, 2) NULL DEFAULT NULL COMMENT '利润',
   `stock` int(10) NULL DEFAULT NULL COMMENT '商品库存',
-  `freight` decimal(16, 2) NULL DEFAULT NULL COMMENT '运费公式',
+  `freight` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '运费公式',
   `brand_id` bigint(20) NULL DEFAULT NULL COMMENT '品牌ID',
   `category_id` bigint(20) NULL DEFAULT NULL COMMENT '类目ID',
   `classify_id` bigint(20) NULL DEFAULT NULL COMMENT '分类ID',
@@ -1207,5 +1245,105 @@ CREATE TABLE `SYS_USER_ROLE`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `idx_unique`(`user_id`, `role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for V_MODULE
+-- ----------------------------
+DROP TABLE IF EXISTS `V_MODULE`;
+CREATE TABLE `V_MODULE`  (
+  `id` bigint(20) NOT NULL,
+  `create_date` datetime(0) NULL DEFAULT NULL,
+  `create_man` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `modify_date` datetime(0) NULL DEFAULT NULL,
+  `modify_man` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `value` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Procedure structure for UPPERCASE_TABLENAMES
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `UPPERCASE_TABLENAMES`;
+delimiter ;;
+CREATE PROCEDURE `UPPERCASE_TABLENAMES`(IN dbname VARCHAR(200))
+BEGIN
+  DECLARE done INT DEFAULT 0;
+  DECLARE oldname VARCHAR(200);
+  DECLARE cur CURSOR FOR SELECT table_name FROM information_schema.TABLES WHERE table_schema = dbname;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+OPEN cur;
+REPEAT
+  FETCH cur INTO oldname;
+  SET @newname = UPPER(oldname);
+  SET @isNotSame = @newname <> BINARY oldname;
+  IF NOT done && @isNotSame THEN
+    SET @SQL = CONCAT('rename table `',oldname,'` to `', LOWER(@newname), '_tmp` ');
+    PREPARE tmpstmt FROM @SQL;
+    EXECUTE tmpstmt;
+    SET @SQL = CONCAT('rename table `',LOWER(@newname),'_tmp` to `',@newname, '`');
+    PREPARE tmpstmt FROM @SQL;
+    EXECUTE tmpstmt;
+    DEALLOCATE PREPARE tmpstmt;
+  END IF;
+UNTIL done END REPEAT;
+CLOSE cur;
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for UP_CHANGE_UTF8MB4
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `UP_CHANGE_UTF8MB4`;
+delimiter ;;
+CREATE PROCEDURE `UP_CHANGE_UTF8MB4`()
+BEGIN
+  DECLARE $i INT;
+  DECLARE $cnt INT;
+  DECLARE $NAME VARCHAR(64);
+
+  #创建临时表,代替游标
+  DROP TABLE IF EXISTS tmp_Table_name;
+  CREATE TEMPORARY TABLE tmp_Table_name (
+    id INT NOT NULL AUTO_INCREMENT,
+    table_name VARCHAR(64) NOT NULL,
+    PRIMARY KEY (`id`)
+  );
+
+  #插入要处理的表名到临时表中
+  INSERT INTO tmp_Table_name (table_name)
+    SELECT
+      table_name
+    FROM information_schema.`TABLES`
+    WHERE TABLE_TYPE = 'BASE TABLE'
+    AND TABLE_SCHEMA = DATABASE();
+
+  #循环处理每一张表,改表的字符集
+  SET $i = 1;
+  SELECT
+    COUNT(1) INTO $cnt
+  FROM tmp_Table_name;
+  WHILE $i <= $cnt DO
+    SELECT
+      table_name INTO $NAME
+    FROM tmp_Table_name
+    WHERE id = $i;
+    
+    SET @asql = CONCAT('ALTER TABLE ', $NAME, '  CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci; ');
+    PREPARE asql FROM @asql;
+    EXECUTE asql;
+    
+    SET @asql = CONCAT('ALTER TABLE ', $NAME, ' CONVERT TO CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci; ');
+    PREPARE asql FROM @asql;
+    SELECT @asql;
+    EXECUTE asql;
+
+    SET $i = $i + 1;
+  END WHILE;
+  DEALLOCATE PREPARE asql;
+  DROP TABLE tmp_Table_name;
+END
+;;
+delimiter ;
 
 SET FOREIGN_KEY_CHECKS = 1;
