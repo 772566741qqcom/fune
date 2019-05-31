@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.d2c.shop.modules.core.mapper.ShopMapper">
+    <resultMap id="baseMap" type="com.d2c.shop.modules.core.model.ShopDO">
+
+    </resultMap>
+
+    <update id="updateBalance">
+        UPDATE CORE_SHOP
+        SET balance=balance + #{balance}, frozen=frozen + #{frozen}, modify_date=now()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateDeposit">
+        UPDATE CORE_SHOP
+        SET deposit=deposit + #{deposit}, recharge=recharge+ #{recharge}, modify_date=now()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

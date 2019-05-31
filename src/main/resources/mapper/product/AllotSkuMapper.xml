@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.d2c.shop.modules.product.mapper.AllotSkuMapper">
+    <resultMap id="baseMap" type="com.d2c.shop.modules.product.model.AllotSkuDO">
+
+    </resultMap>
+
+    <resultMap id="allotSkuMap" type="com.d2c.shop.modules.product.model.support.AllotSkuBean">
+        <result column="allot_sku_id" property="allotSkuId"/>
+        <result column="settle_stock" property="settleStock"/>
+        <result column="from_shop_id" property="fromShopId"/>
+    </resultMap>
+
+    <update id="doDeductStock">
+        UPDATE P_ALLOT_SKU
+        SET stock = stock - #{quantity}, modify_date=now()
+        WHERE id = #{id}
+    </update>
+
+    <select id="doListAllot" resultMap="allotSkuMap">
+        SELECT a.*,
+        b.id as allot_sku_id,
+        b.stock-a.stock as settle_stock,
+        b.from_shop_id as from_shop_id
+        FROM P_PRODUCT_SKU a, P_ALLOT_SKU b
+        WHERE a.shop_id = #{toShopId} AND a.id=b.sku_id AND b.stock-a.stock > 0
+    </select>
+
+    <select id="doSettleAllot" resultMap="allotSkuMap">
+        SELECT a.*,
+        b.id as allot_sku_id,
+        b.stock-a.stock as settle_stock,
+        b.from_shop_id as from_shop_id
+        FROM P_PRODUCT_SKU a, P_ALLOT_SKU b
+        WHERE b.from_shop_id = #{fromShopId} AND a.shop_id = #{toShopId} AND a.id=b.sku_id AND b.stock-a.stock > 0
+    </select>
+
+</mapper>
